@@ -4,8 +4,7 @@ import randomAdvice from "./randomAdvice.js";
 import firebase from "./firebase.js";
 import zoltan from "./assets/zoltan.png";
 
-
-const GetApiResponse = ({ showMaze }) => {
+const GetApiResponse = ({ showMaze, setEntryId }) => {
   // State for advice
   const [advice, setAdvice] = useState([]);
 
@@ -16,10 +15,10 @@ const GetApiResponse = ({ showMaze }) => {
   // State for name input
   const [userName, setUserName] = useState("");
 
-  // Handler for keyword input
   const handleChange = (e) => {
-    setUserInput(e.target.value);
-    setQuery(userInput);
+    const newValue = e.target.value;
+    setUserInput(newValue);
+    setQuery(newValue); // Use newValue directly instead of userInput
   };
 
   // Handler for user name input
@@ -27,7 +26,6 @@ const GetApiResponse = ({ showMaze }) => {
     setUserName(e.target.value);
   };
 
-  // Handler for submit button
   const submitChange = (e) => {
     e.preventDefault();
     setUserInput("");
@@ -38,8 +36,11 @@ const GetApiResponse = ({ showMaze }) => {
       name: userName,
       input: advice,
     };
-    dbRef.push(newUser);
-    setMazePlease(true);
+    dbRef.push(newUser).then((snapshot) => {
+      const entryId = snapshot.key; // The unique ID Firebase generates
+      setEntryId(entryId);
+      setMazePlease(true);
+    });
   };
 
   useEffect(() => {
@@ -61,7 +62,6 @@ const GetApiResponse = ({ showMaze }) => {
       });
     }
   }, [query]);
-
 
   //toggling component
   const [mazePlease, setMazePlease] = useState(false);
