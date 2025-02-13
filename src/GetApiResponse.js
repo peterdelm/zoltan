@@ -42,7 +42,6 @@ const GetApiResponse = ({ showMaze, setEntryId }) => {
     push(usersRef, newUser)
       .then((newRef) => {
         const uniqueId = newRef.key;
-        const userWithId = { ...newUser, id: uniqueId };
         setEntryId(uniqueId);
         setMazePlease(true);
       })
