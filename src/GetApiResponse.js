@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import randomAdvice from "./randomAdvice.js";
-import firebase from "./firebase.js";
+import { ref, push } from "firebase/database";
 import zoltan from "./assets/zoltan.png";
+import { database } from "./firebase.js"; // Adjust the import to your file
 
 const GetApiResponse = ({ showMaze, setEntryId }) => {
   // State for advice
@@ -31,16 +32,25 @@ const GetApiResponse = ({ showMaze, setEntryId }) => {
     setUserInput("");
     setUserName("");
 
-    const dbRef = firebase.database().ref();
     const newUser = {
       name: userName,
       input: advice,
     };
-    dbRef.push(newUser).then((snapshot) => {
-      const entryId = snapshot.key; // The unique ID Firebase generates
-      setEntryId(entryId);
-      setMazePlease(true);
-    });
+    const usersRef = ref(database, "/");
+
+    // Push new user data and capture the unique key generated
+    push(usersRef, newUser)
+      .then((newRef) => {
+        const uniqueId = newRef.key;
+        const userWithId = { ...newUser, id: uniqueId };
+        setEntryId(uniqueId);
+        setMazePlease(true);
+
+        console.log("User with unique ID:", userWithId);
+      })
+      .catch((error) => {
+        console.error("Error adding user: ", error);
+      });
   };
 
   useEffect(() => {

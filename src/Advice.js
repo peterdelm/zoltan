@@ -1,23 +1,29 @@
-import firebase from "./firebase.js";
+import { ref, get, child } from "firebase/database";
 import { useEffect, useState } from "react";
+import { database } from "./firebase.js"; // Adjust the import to your file
 
 const Advice = ({ entryId, returnToStart }) => {
   const [displayedName, setDisplayedName] = useState("");
   const [displayedAdvice, setDisplayedAdvice] = useState("");
 
   // Pulls firebase data and displays it on page
-  useEffect(() => {
-    const dbRef = firebase.database().ref(entryId);
 
-    dbRef.once("value", (snap) => {
-      if (snap.exists()) {
-        const data = snap.val();
-        setDisplayedName(data.name);
-        setDisplayedAdvice(data.input);
-      } else {
-        console.log("No data found for this ID.");
-      }
-    });
+  useEffect(() => {
+    const usersRef = ref(database, "/");
+
+    get(child(usersRef, `${entryId}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          setDisplayedName(data.name);
+          setDisplayedAdvice(data.input);
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, [entryId]);
 
   return (
