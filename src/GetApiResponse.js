@@ -45,8 +45,6 @@ const GetApiResponse = ({ showMaze, setEntryId }) => {
         const userWithId = { ...newUser, id: uniqueId };
         setEntryId(uniqueId);
         setMazePlease(true);
-
-        console.log("User with unique ID:", userWithId);
       })
       .catch((error) => {
         console.error("Error adding user: ", error);
