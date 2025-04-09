@@ -1,6 +1,6 @@
-import axios from "axios";
+// import axios from "axios";
 import { useEffect, useState } from "react";
-import randomAdvice from "./randomAdvice.js";
+// import randomAdvice from "./randomAdvice.js";
 import { ref, push } from "firebase/database";
 import zoltan from "./assets/zoltan.png";
 import { database } from "./firebase.js"; // Adjust the import to your file
